@@ -4,7 +4,7 @@ import PGEnquiryTracker from '../pages/PGEnquiryTracker';
 import Dashboard from '../pages/Dashboard';
 import WelcomePage from '../pages/WelcomePage';
 import LoginPage from '../pages/LoginPage';
-import SetPassword from '../pages/setPassword';
+import SetPassword from '../pages/SetPassword';
 import PublicRoute from './PublicRoute';
 
 function PlaceholderPage({ title }) {
