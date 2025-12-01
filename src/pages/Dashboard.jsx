@@ -1,272 +1,349 @@
 import React, { useState } from 'react';
-// --- Import Lucide Icons ---
 import {
-    Home,
-    Building,
-    User,
-    Menu,
-    Bell,
-    Search,
-    ShieldAlert,
-    CreditCard,
-    UtensilsCrossed,
-    Users,
-    FileText,
-    LifeBuoy,
-    Settings,
-    Twitter,
-    Facebook,
-    Instagram,
-    Youtube,
-    MailPlus,
+  Home,
+  Building,
+  User,
+  Menu,
+  Bell,
+  Search,
+  ShieldAlert,
+  CreditCard,
+  UtensilsCrossed,
+  Users,
+  FileText,
+  LifeBuoy,
+  Settings,
+  Twitter,
+  Facebook,
+  Instagram,
+  Youtube,
+  MailPlus,
+  LogOut,
+  ChevronRight,
+  Sparkles,
+  MapPin
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-// --- Icon Components (Removed) ---
-// All inline SVG components have been removed.
-
-// --- Page Components ---
+// --- Components ---
 
 function Header() {
-    return (
-        <header className="flex justify-between items-center p-4 bg-white shadow-sm sticky top-0 z-10">
-            <h1 className="text-2xl font-bold text-blue-600">PGManager</h1>
-            <div className="flex items-center space-x-4">
-                <button className="text-gray-600 hover:text-blue-600">
-                    <Bell className="w-6 h-6" />
-                </button>
-                <button className="w-8 h-8 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center">
-                    <User className="w-5 h-5" />
-                </button>
-            </div>
-        </header>
-    );
+  return (
+    <header className="flex justify-between items-center px-6 py-4 sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-white/20 shadow-sm transition-all">
+      <div className="flex items-center gap-2">
+         <div className="bg-blue-600 rounded-lg p-1.5 shadow-lg shadow-blue-500/20">
+             <Building className="w-5 h-5 text-white" />
+         </div>
+         <h1 className="text-xl font-bold text-slate-800 tracking-tight">PGManager</h1>
+      </div>
+      
+      <div className="flex items-center gap-3">
+        <button className="relative p-2 rounded-full bg-slate-50 text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+          <Bell className="w-5 h-5" />
+          <span className="absolute top-1.5 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+        </button>
+        <button className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 p-[2px] shadow-md">
+           <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
+             <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" className="w-full h-full" />
+           </div>
+        </button>
+      </div>
+    </header>
+  );
 }
 
 function Greeting() {
-    return (
-        <div className="p-4">
-            <h2 className="text-xl font-semibold text-gray-800">Hi, Priyank!</h2>
-            <p className="text-gray-500">Welcome to your dashboard.</p>
-        </div>
-    );
+  return (
+    <div className="px-6 py-6">
+      <div className="flex justify-between items-end">
+          <div>
+            <p className="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-1">Monday, 24 Aug</p>
+            <h2 className="text-2xl font-bold text-slate-800">Hi, Priyank! <span className="inline-block animate-pulse">👋</span></h2>
+          </div>
+          <div className="text-right">
+             <div className="flex items-center gap-1 text-slate-500 text-xs bg-slate-100 px-2 py-1 rounded-full">
+                <MapPin className="w-3 h-3 text-blue-500" />
+                Pune, MH
+             </div>
+          </div>
+      </div>
+    </div>
+  );
 }
 
 function QuickActions() {
-    const actions = [
-        {
-            title: "Find a PG",
-            img: "https://picsum.photos/seed/pgfind/600/400", // Removed blur from URL
-        },
-        {
-            title: "My Bookings",
-            img: "https://picsum.photos/seed/pgbookings/600/400", // Removed blur from URL
-        },
-        {
-            title: "Add Property",
-            img: "https://picsum.photos/seed/pgproperty/600/400", // Removed blur from URL
-        },
-    ];
+  const actions = [
+    {
+      title: "Find a PG",
+      subtitle: "Explore stays",
+      img: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+      color: "from-blue-600/90 to-blue-900/10"
+    },
+    {
+      title: "My Bookings",
+      subtitle: "View history",
+      img: "https://images.unsplash.com/photo-1522771753035-4a53c9d2785f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+      color: "from-purple-600/90 to-purple-900/10"
+    },
+    {
+      title: "Add Property",
+      subtitle: "List yours",
+      img: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+      color: "from-emerald-600/90 to-emerald-900/10"
+    },
+  ];
 
-    return (
-        <div className="p-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Quick Actions</h3>
-            <div className="grid grid-cols-3 gap-3">
-                {actions.map((action) => (
-                    <div
-                        key={action.title}
-                        className="relative rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform hover:scale-105 h-28"
-                    >
-                        {/* Background Image */}
-                        <img
-                            src={action.img}
-                            alt={action.title}
-                            className="absolute inset-0 w-full h-full object-cover"
-                            onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/600x400/cccccc/ffffff?text=Error'; }}
-                        />
-
-                        {/* Gradient Overlay */}
-                        {/* This creates a gradient from 60% black at the bottom to fully transparent at the top */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-2">
-                            <p className="text-white text-sm font-semibold">
-                                {action.title}
-                            </p>
-                        </div>
-                    </div>
-                ))}
+  return (
+    <div className="px-6 mb-8">
+      <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-bold text-slate-800">Quick Actions</h3>
+          <button className="text-blue-600 text-xs font-semibold hover:underline">See All</button>
+      </div>
+      
+      {/* Horizontal Scroll for Cards */}
+      <div className="flex gap-4 overflow-x-auto pb-4 -mx-6 px-6 scrollbar-hide snap-x snap-mandatory">
+        {actions.map((action) => (
+          <div
+            key={action.title}
+            className="snap-center shrink-0 relative w-64 h-36 rounded-2xl shadow-lg overflow-hidden cursor-pointer group transition-transform active:scale-95"
+          >
+            <img
+              src={action.img}
+              alt={action.title}
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+            />
+            <div className={`absolute inset-0 bg-gradient-to-t ${action.color} via-transparent to-transparent flex flex-col justify-end p-4`}>
+              <p className="text-white/80 text-xs font-medium mb-0.5">{action.subtitle}</p>
+              <p className="text-white text-lg font-bold shadow-sm">{action.title}</p>
             </div>
-        </div>
-    );
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 function Services() {
-    const services = [
-        { id: "/search", title: "Search PG", icon: <Search className="w-6 h-6 text-blue-500" />, color: "bg-blue-50" },
-        { id: "#", title: "Complaints", icon: <ShieldAlert className="w-6 h-6 text-red-500" />, color: "bg-red-50" },
-        { id: "#", title: "Pay Rent", icon: <CreditCard className="w-6 h-6 text-green-500" />, color: "bg-green-50" },
-        { id: "#", title: "Food Menu", icon: <UtensilsCrossed className="w-6 h-6 text-orange-500" />, color: "bg-orange-50" },
-        { id: "#", title: "Guest Entry", icon: <Users className="w-6 h-6 text-indigo-500" />, color: "bg-indigo-50" },
-        { id: "#", title: "Notices", icon: <FileText className="w-6 h-6 text-yellow-500" />, color: "bg-yellow-50" },
-        { id: "#", title: "Support", icon: <LifeBuoy className="w-6 h-6 text-purple-500" />, color: "bg-purple-50" },
-        { id: "#", title: "Settings", icon: <Settings className="w-6 h-6 text-gray-500" />, color: "bg-gray-50" },
-        { id: "/enquiries", title: "Inquries", icon: <MailPlus className="w-6 h-6 text-pink-500" />, color: "bg-pink-50" },
-    ];
+  const services = [
+    { id: "/search", title: "Search", icon: <Search className="w-5 h-5 text-blue-600" />, color: "bg-blue-100", border: "border-blue-200" },
+    { id: "#", title: "Complaints", icon: <ShieldAlert className="w-5 h-5 text-red-600" />, color: "bg-red-100", border: "border-red-200" },
+    { id: "#", title: "Pay Rent", icon: <CreditCard className="w-5 h-5 text-green-600" />, color: "bg-green-100", border: "border-green-200" },
+    { id: "#", title: "Menu", icon: <UtensilsCrossed className="w-5 h-5 text-orange-600" />, color: "bg-orange-100", border: "border-orange-200" },
+    { id: "#", title: "Visitors", icon: <Users className="w-5 h-5 text-indigo-600" />, color: "bg-indigo-100", border: "border-indigo-200" },
+    { id: "#", title: "Notices", icon: <FileText className="w-5 h-5 text-yellow-600" />, color: "bg-yellow-100", border: "border-yellow-200" },
+    { id: "#", title: "Support", icon: <LifeBuoy className="w-5 h-5 text-purple-600" />, color: "bg-purple-100", border: "border-purple-200" },
+    { id: "/enquiries", title: "Inquiries", icon: <MailPlus className="w-5 h-5 text-pink-600" />, color: "bg-pink-100", border: "border-pink-200" },
+  ];
 
-    return (
-        <div className="p-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">More Services</h3>
-            <div className="grid grid-cols-4 gap-4">
-                {services.map((service) => (
-                    <Link to={service.id} key={service.title} className="flex flex-col items-center justify-center space-y-2">
-                        <div className={`w-16 h-16 ${service.color} rounded-xl flex items-center justify-center shadow-sm`}>
-                            {service.icon}
-                        </div>
-                        <p className="text-xs text-center font-medium text-gray-600">{service.title}</p>
-                    </Link>
-                ))}
-            </div>
+  return (
+    <div className="px-6 mb-8">
+      <h3 className="text-lg font-bold text-slate-800 mb-4">Services</h3>
+      <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-5 border border-white/40 shadow-sm">
+        <div className="grid grid-cols-4 gap-y-6 gap-x-2">
+            {services.map((service) => (
+            <Link to={service.id} key={service.title} className="flex flex-col items-center gap-2 group">
+                <div className={`w-12 h-12 ${service.color} rounded-2xl flex items-center justify-center shadow-sm border ${service.border} group-hover:scale-110 transition-transform duration-300`}>
+                    {service.icon}
+                </div>
+                <p className="text-[10px] text-center font-semibold text-slate-600 group-hover:text-blue-600 transition-colors">{service.title}</p>
+            </Link>
+            ))}
         </div>
-    );
+      </div>
+    </div>
+  );
 }
 
 function NewsAndTips() {
-    const articles = [
-        {
-            title: "5 crucial tips for anyone moving into a PG for the first time.",
-            img: "https://placehold.co/600x400/EC4899/FFFFFF?text=PG+Tips"
-        },
-        {
-            title: "How to manage your monthly budget and save money while living in a PG.",
-            img: "https://placehold.co/600x400/8B5CF6/FFFFFF?text=Budgeting"
-        },
-        {
-            title: "Discover the best localities for students and professionals moving to Pune.",
-            img: "https://placehold.co/600x400/F59E0B/FFFFFF?text=Pune+Guide"
-        },
-    ];
+  const articles = [
+    {
+      title: "5 crucial tips for moving into a PG first time.",
+      category: "Guide",
+      img: "https://images.unsplash.com/photo-1517260739337-6799d239ce83?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      title: "How to manage monthly budget & save money.",
+      category: "Finance",
+      img: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      title: "Discover the best localities in Pune.",
+      category: "Location",
+      img: "https://images.unsplash.com/photo-1565058728564-282bb2b467bd?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+    },
+  ];
 
-    return (
-        <div className="p-4"> {/* Extend padding to screen edge on mobile */}
-            <h3 className="text-lg font-semibold text-gray-900 mb-3 px-4">Do You Know?</h3>
+  return (
+    <div className="mb-8">
+      <div className="px-6 mb-3 flex items-center justify-between">
+          <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+            Tips & Updates
+          </h3>
+      </div>
 
-            {/* Full-width scrollable area with hidden scrollbar */}
-            <div className="overflow-x-auto scrollbar-hide"> {/* scrollbar-hide custom class */}
-                <div className="flex space-x-4 px-4 pb-6 snap-x snap-mandatory">
-                    {articles.map((article) => (
-                        <div
-                            key={article.title}
-                            className="flex-shrink-0 w-44 snap-center bg-gray-50 rounded-2xl shadow-md overflow-hidden"
-                        >
-                            <img
-                                src={article.img}
-                                alt={article.title}
-                                className="w-full h-40 object-cover"
-                            />
-                            <div className="p-3">
-                                <p className="text-sm font-medium text-gray-700">
-                                    {article.title}
-                                </p>
-                            </div>
-                        </div>
-                    ))}
+      <div className="flex gap-4 overflow-x-auto px-6 pb-6 scrollbar-hide snap-x snap-mandatory">
+        {articles.map((article) => (
+          <div
+            key={article.title}
+            className="snap-center shrink-0 w-60 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition-shadow"
+          >
+            <div className="h-32 overflow-hidden relative">
+                <div className="absolute top-2 left-2 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
+                    {article.category}
                 </div>
-            </div>
-        </div>
-    );  
-}
-
-// --- SOCIAL MEDIA COMPONENT ---
-function SocialMedia() {
-    const socialLinks = [
-        { name: 'X', icon: <Twitter className="w-5 h-5" />, color: "bg-black" },
-        { name: 'Facebook', icon: <Facebook className="w-6 h-6" />, color: "bg-blue-600" },
-        { name: 'Instagram', icon: <Instagram className="w-6 h-6" />, color: "bg-pink-500" },
-        { name: 'YouTube', icon: <Youtube className="w-7 h-7" />, color: "bg-red-600" },
-    ];
-
-    return (
-        <div className="p-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Follow Us On Social Media Platforms</h3>
-            <div className="relative w-full h-40 rounded-lg shadow-md overflow-hidden">
-                {/* Background Image */}
                 <img
-                    src="https://picsum.photos/seed/socialbg/800/400"
-                    alt="Social media background"
-                    className="absolute inset-0 w-full h-full object-cover"
+                src={article.img}
+                alt={article.title}
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                 />
-                {/* Dark overlay */}
-                <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-
-                {/* Icons */}
-                <div className="relative h-full flex items-center justify-center space-x-4 z-10">
-                    {socialLinks.map((link) => (
-                        <button
-                            key={link.name}
-                            aria-label={`Follow us on ${link.name}`}
-                            className={`w-12 h-12 ${link.color} rounded-full flex items-center justify-center text-white shadow-lg transition-transform hover:scale-110`}
-                        >
-                            {link.icon}
-                        </button>
-                    ))}
-                </div>
             </div>
-        </div>
-    );
+            <div className="p-3">
+              <p className="text-sm font-semibold text-slate-700 leading-snug line-clamp-2">
+                {article.title}
+              </p>
+              <button className="text-[10px] text-blue-600 font-bold mt-2 flex items-center gap-1">
+                Read More <ChevronRight className="w-3 h-3" />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
+function SocialMedia() {
+  const socialLinks = [
+    { name: 'X', icon: <Twitter className="w-4 h-4" />, color: "bg-black text-white" },
+    { name: 'Facebook', icon: <Facebook className="w-5 h-5" />, color: "bg-[#1877F2] text-white" },
+    { name: 'Instagram', icon: <Instagram className="w-5 h-5" />, color: "bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500 text-white" },
+    { name: 'YouTube', icon: <Youtube className="w-5 h-5" />, color: "bg-[#FF0000] text-white" },
+  ];
+
+  return (
+    <div className="px-6 mb-6">
+      <div className="relative rounded-3xl overflow-hidden shadow-lg group">
+        <img
+            src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+            alt="Social BG"
+            className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700"
+        />
+        <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-[2px]"></div>
+        
+        <div className="relative z-10 p-6 flex flex-col items-center text-center">
+            <h3 className="text-white font-bold text-lg mb-1">Join our Community</h3>
+            <p className="text-slate-300 text-xs mb-5">Stay updated with the latest news & offers</p>
+            
+            <div className="flex gap-4">
+                {socialLinks.map((link) => (
+                    <button
+                        key={link.name}
+                        className={`w-10 h-10 ${link.color} rounded-full flex items-center justify-center shadow-lg transition-transform hover:-translate-y-1 active:scale-95`}
+                    >
+                        {link.icon}
+                    </button>
+                ))}
+            </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function BottomNav() {
-    const [active, setActive] = useState("Home");
+  const [active, setActive] = useState("Home");
+  
+  const navItems = [
+    { name: "Home", icon: Home },
+    { name: "Bookings", icon: Building },
+    { name: "Profile", icon: User },
+    { name: "Menu", icon: Menu },
+  ];
 
-    // Use the Lucide components directly
-    const navItems = [
-        { name: "Home", icon: Home },
-        { name: "Bookings", icon: Building },
-        { name: "Profile", icon: User },
-        { name: "Menu", icon: Menu },
-    ];
-
-    return (
-        <nav className="fixed bottom-0 left-0 right-0 bg-white shadow-t-md border-t border-gray-200 z-10">
-            <div className="flex justify-around max-w-lg mx-auto py-2">
-                {navItems.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = active === item.name;
-                    return (
-                        <button
-                            key={item.name}
-                            onClick={() => setActive(item.name)}
-                            className={`flex flex-col items-center justify-center p-2 rounded-lg w-20 
-                ${isActive ? 'text-blue-600' : 'text-gray-500 hover:text-blue-500'}`}
-                        >
-                            {/* Pass strokeWidth and className directly to the Lucide icon */}
-                            <Icon className="w-6 h-6 mb-1" strokeWidth={isActive ? 2.5 : 2} />
-                            <span className="text-xs font-medium">{item.name}</span>
-                        </button>
-                    );
-                })}
-            </div>
+  return (
+    <div className="fixed bottom-6 left-0 right-0 z-40 px-6 pointer-events-none">
+        <nav className="max-w-[400px] mx-auto bg-white/90 backdrop-blur-xl border border-white/40 shadow-xl shadow-slate-200/50 rounded-full py-3 px-6 flex justify-between items-center pointer-events-auto">
+            {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = active === item.name;
+                return (
+                    <button
+                        key={item.name}
+                        onClick={() => setActive(item.name)}
+                        className={`relative flex flex-col items-center justify-center w-12 h-12 transition-all duration-300 ${isActive ? '-translate-y-2' : 'hover:bg-slate-50 rounded-full'}`}
+                    >
+                        <div className={`
+                            p-2.5 rounded-full transition-all duration-300
+                            ${isActive ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' : 'text-slate-400'}
+                        `}>
+                            <Icon className="w-5 h-5" strokeWidth={2.5} />
+                        </div>
+                        {isActive && (
+                            <span className="absolute -bottom-4 text-[10px] font-bold text-blue-600 animate-in fade-in slide-in-from-top-1">
+                                {item.name}
+                            </span>
+                        )}
+                    </button>
+                );
+            })}
         </nav>
-    );
+    </div>
+  );
 }
 
 
 // --- Main App Component ---
 
 export default function Dashboard() {
-    return (
-        // Set a max-width for a more mobile-like view on desktop
-        // Set min-height to ensure background color covers viewport
-        <div className="font-sans bg-gray-50 max-w-lg mx-auto min-h-screen shadow-2xl">
-            <Header />
-            <main className="pb-20"> {/* Add padding-bottom to avoid overlap with bottom nav */}
-                <Greeting />
-                <QuickActions />
-                <Services />
-                <NewsAndTips />
-                <SocialMedia /> {/* --- ADDED NEW COMPONENT HERE --- */}
-            </main>
-            <BottomNav />
-        </div>
-    );
+  return (
+    <div className="font-sans bg-slate-50 min-h-screen w-full relative overflow-x-hidden">
+      
+      {/* Background Decor - Blobs */}
+      <div className="fixed top-[-10%] right-[-5%] w-96 h-96 bg-blue-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob pointer-events-none"></div>
+      <div className="fixed bottom-[-10%] left-[-10%] w-96 h-96 bg-purple-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-2000 pointer-events-none"></div>
+      <div className="fixed top-[40%] left-[20%] w-72 h-72 bg-pink-200/30 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000 pointer-events-none"></div>
+
+      {/* Main Content Wrapper - Simulates Mobile Width on Desktop */}
+      <div className="max-w-lg mx-auto bg-white/30 min-h-screen relative shadow-2xl">
+        <Header />
+        
+        <main className="pb-32"> {/* Extra padding for floating nav */}
+          <Greeting />
+          <QuickActions />
+          <Services />
+          <NewsAndTips />
+          <SocialMedia />
+        </main>
+        
+        <BottomNav />
+      </div>
+
+       {/* Tailwind Animations */}
+       <style>{`
+        @keyframes blob {
+          0% { transform: translate(0px, 0px) scale(1); }
+          33% { transform: translate(30px, -50px) scale(1.1); }
+          66% { transform: translate(-20px, 20px) scale(0.9); }
+          100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animate-blob {
+          animation: blob 7s infinite;
+        }
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+        .animation-delay-4000 {
+          animation-delay: 4s;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+      `}</style>
+    </div>
+  );
 }
