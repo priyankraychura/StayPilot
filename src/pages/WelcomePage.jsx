@@ -26,7 +26,7 @@ export default function WelcomePage() {
       {/* Main Content */}
       <main className="flex-grow flex flex-col items-center p-4 pt-8">
         {/* Login Card */}
-        <div className="w-full max-w-sm bg-white rounded-2xl shadow-md p-4 mb-6">
+        <div className="w-full max-w-sm bg-white rounded-2xl p-4 mb-6">
           <div className="flex justify-center gap-1 items-center">
             <span className="text-gray-700 font-normal">Registered user?</span>
             <Link to="/login" className="flex items-center text-blue-600 font-semibold">
@@ -36,7 +36,7 @@ export default function WelcomePage() {
         </div>
 
         {/* Registration Card */}
-        <div className="w-full max-w-sm bg-sky-100/70 rounded-xl shadow-lg p-4 mb-6">
+        <div className="w-full max-w-sm bg-sky-100/70 rounded-xl p-4 mb-6">
           <h2 className="text-md font-medium flex justify-center text-gray-900 mb-4">New User Registration</h2>
           
           {/* Mobile Input - Overhauled */}
@@ -96,7 +96,7 @@ export default function WelcomePage() {
 
       {/* Bottom Banner */}
       <footer className="w-full max-w-sm mx-auto p-4">
-        <div className="bg-white rounded-lg shadow-md p-4 flex items-center justify-between">
+        <div className="bg-white rounded-lg p-4 flex items-center justify-between">
           <div className="flex items-center">
             {/* Placeholder for image */}
             <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
