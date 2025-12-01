@@ -221,7 +221,7 @@ export default function SetPassword() {
                   type={showConfirmPass ? 'text' : 'password'}
                   placeholder="Confirm your password"
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.targe.value)}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   className="w-full bg-white rounded-full py-3 px-5 pl-12 pr-12 text-gray-800 placeholder-gray-500 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
