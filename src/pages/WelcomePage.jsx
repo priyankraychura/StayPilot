@@ -10,7 +10,7 @@ export default function WelcomePage() {
     "Register complaints and get quick support",
   ];
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <div className="font-sans min-h-screen w-full bg-cyan-50 flex flex-col">
@@ -47,8 +47,11 @@ export default function WelcomePage() {
               placeholder="Enter your personal email"
               className="flex-grow bg-transparent text-gray-900 placeholder-gray-500 text-sm focus:outline-none"
             />
-            {/* This is the clickable "Register" button inside the input */}
-            <button onClick={() => navigate('/otp')} className="flex-shrink-0 px-4 py-2.5 text-sm font-normal text-gray-600 border-gray-200 bg-sky-100/70 rounded-full hover:bg-gray-50 transition-all">
+            {/* Added 'mr-1' to create space from the right edge */}
+            <button 
+              onClick={() => navigate('/otp')} 
+              className="flex-shrink-0 px-4 py-2.5 mr-1 text-sm font-normal text-gray-600 border-gray-200 bg-sky-100/70 rounded-full hover:bg-gray-50 transition-all"
+            >
               Register
             </button>
           </div>

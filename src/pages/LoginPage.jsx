@@ -60,7 +60,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="font-sans min-h-screen w-full bg-cyan-50 flex flex-col p-4 sm:max-w-md sm:mx-auto sm:shadow-lg sm:rounded-lg sm:my-8">
+    <div className="font-sans min-h-screen w-full bg-cyan-50 flex flex-col p-4 sm:max-w-md sm:mx-auto sm:rounded-lg sm:my-8">
       {/* Top Bar */}
       <div className="items-center mb-8">
         <button onClick={() => navigate('/')} className="p-2 rounded-full hover:bg-cyan-100 text-blue-600">
