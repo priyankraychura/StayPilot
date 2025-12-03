@@ -232,17 +232,17 @@ export default function PGEnquiryTracker() {
   }
 
   return (
-    <div className="font-sans bg-slate-50 min-h-screen w-full relative overflow-x-hidden">
+    <div className="font-sans bg-slate-50 min-h-screen w-full relative sm:flex sm:items-center sm:justify-center overflow-hidden">
       <style>{styles}</style>
       
-      {/* Background Decor - Consistent with Dashboard */}
+      {/* Background Decor */}
       <div className="fixed top-[-10%] right-[-5%] w-96 h-96 bg-blue-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob pointer-events-none"></div>
       <div className="fixed bottom-[-10%] left-[-10%] w-96 h-96 bg-purple-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-2000 pointer-events-none"></div>
 
-      <div className="max-w-lg mx-auto bg-white/30 min-h-screen relative shadow-2xl pb-24">
+      <div className="w-full sm:max-w-lg h-screen sm:h-[85vh] bg-white/40 sm:bg-white/30 backdrop-blur-xl relative shadow-none sm:shadow-2xl sm:rounded-3xl flex flex-col overflow-hidden transition-all duration-300">
         
         {/* --- Dynamic Header --- */}
-        <div className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-white/40 shadow-sm h-[72px] flex items-center px-4 transition-all duration-300 ease-in-out">
+        <div className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-white/40 shadow-sm h-[64px] flex items-center px-4 transition-all duration-300 ease-in-out shrink-0">
           
           {!isSearchActive ? (
             /* Standard Header View */
@@ -250,13 +250,13 @@ export default function PGEnquiryTracker() {
               <div className="flex items-center gap-3">
                 <button 
                   onClick={() => navigate('/')} 
-                  className="w-10 h-10 rounded-full bg-white/50 hover:bg-white flex items-center justify-center text-slate-600 transition-all border border-white/50 shadow-sm active:scale-95"
+                  className="w-9 h-9 rounded-full bg-white/50 hover:bg-white flex items-center justify-center text-slate-600 transition-all border border-white/50 shadow-sm active:scale-95"
                 >
-                  <ArrowLeft className="w-5 h-5" />
+                  <ArrowLeft className="w-4 h-4" />
                 </button>
                 <div>
-                  <h1 className="text-lg font-bold text-slate-800 leading-tight">Enquiries</h1>
-                  <p className="text-xs text-slate-500 font-medium">
+                  <h1 className="text-base font-bold text-slate-800 leading-tight">Enquiries</h1>
+                  <p className="text-[10px] text-slate-500 font-medium">
                     {enquiries.filter(e => !e.completed).length} Pending
                   </p>
                 </div>
@@ -264,23 +264,23 @@ export default function PGEnquiryTracker() {
               
               <button 
                 onClick={() => setIsSearchActive(true)}
-                className="w-10 h-10 rounded-full bg-white/50 hover:bg-white flex items-center justify-center text-slate-600 transition-all border border-white/50 shadow-sm active:scale-95"
+                className="w-9 h-9 rounded-full bg-white/50 hover:bg-white flex items-center justify-center text-slate-600 transition-all border border-white/50 shadow-sm active:scale-95"
               >
-                <Search className="w-5 h-5" />
+                <Search className="w-4 h-4" />
               </button>
             </div>
           ) : (
             /* Expanded Search View */
             <div className="w-full flex items-center gap-3 animate-fadeIn">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
                 <input 
                   ref={searchInputRef}
                   type="text" 
                   placeholder="Search by name or number..." 
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-sm"
+                  className="w-full bg-white border border-slate-200 rounded-lg py-2 pl-9 pr-4 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-sm"
                 />
               </div>
               <button 
@@ -288,7 +288,7 @@ export default function PGEnquiryTracker() {
                   setIsSearchActive(false);
                   setSearchTerm('');
                 }}
-                className="text-sm font-semibold text-slate-500 hover:text-slate-800 px-2 py-1"
+                className="text-xs font-semibold text-slate-500 hover:text-slate-800 px-2 py-1"
               >
                 Cancel
               </button>
@@ -296,17 +296,17 @@ export default function PGEnquiryTracker() {
           )}
         </div>
 
-        {/* --- Content --- */}
-        <div className="p-4 space-y-3">
+        {/* --- Content (Scrollable Area) --- */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-3 pb-24">
           {sortedEnquiries.length === 0 ? (
             <div className="flex flex-col items-center justify-center pt-20 text-center px-6">
-              <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mb-4 animate-bounce">
-                <Users className="w-8 h-8 text-blue-300" />
+              <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-3 animate-bounce">
+                <Users className="w-6 h-6 text-blue-300" />
               </div>
-              <h3 className="text-slate-800 font-semibold mb-1">
+              <h3 className="text-slate-800 font-semibold text-sm mb-1">
                 {searchTerm ? 'No results found' : 'No enquiries found'}
               </h3>
-              <p className="text-slate-500 text-sm">
+              <p className="text-slate-500 text-xs">
                 {searchTerm ? 'Try adjusting your search term.' : 'Add a new enquiry to get started tracking visits.'}
               </p>
             </div>
@@ -315,33 +315,34 @@ export default function PGEnquiryTracker() {
               <div
                 key={enquiry.id}
                 onClick={() => handleEdit(enquiry)}
-                className={`relative group bg-white/70 backdrop-blur-md border border-white/60 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all active:scale-[0.99] cursor-pointer overflow-hidden ${
+                className={`relative group bg-white/70 backdrop-blur-md border border-white/60 rounded-xl p-4 shadow-sm hover:shadow-md transition-all active:scale-[0.99] cursor-pointer overflow-hidden ${
                   enquiry.completed ? 'opacity-60 grayscale-[0.5]' : ''
                 }`}
               >
                 {/* Completed Strip */}
                 {enquiry.completed && (
-                    <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-emerald-500"></div>
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div>
                 )}
 
-                <div className="flex justify-between items-start mb-3 pl-2">
+                <div className="flex justify-between items-start mb-3">
                   <div>
-                    <h3 className={`font-bold text-slate-800 ${enquiry.completed ? 'line-through decoration-slate-400' : ''}`}>
+                    <h3 className={`text-sm font-bold text-slate-800 ${enquiry.completed ? 'line-through decoration-slate-400' : ''}`}>
                       {enquiry.name}
                     </h3>
-                    <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium mt-0.5">
-                        <Phone className="w-3 h-3" />
+                    <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium mt-1">
+                        <Phone className="w-3.5 h-3.5" />
                         {enquiry.number}
                     </div>
                   </div>
                   
-                  {/* Date Badge */}
-                  <div className={`flex flex-col items-end`}>
-                     <div className="bg-blue-50 text-blue-600 px-2 py-1 rounded-lg text-xs font-bold border border-blue-100 flex items-center gap-1">
-                        <Calendar className="w-3 h-3" />
+                  {/* Date Badge - Side by Side */}
+                  <div className="bg-slate-50 border border-slate-100 rounded-lg px-2 py-1.5 flex items-center gap-2">
+                     <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-700">
+                        <Calendar className="w-3 h-3 text-blue-500" />
                         {formatDate(enquiry.date)}
                      </div>
-                     <div className="text-[10px] text-slate-400 font-semibold mt-1 flex items-center gap-1 pr-1">
+                     <div className="w-px h-3 bg-slate-200"></div>
+                     <div className="flex items-center gap-1.5 text-[10px] font-medium text-slate-500">
                         <Clock className="w-3 h-3" />
                         {formatTime(enquiry.time)}
                      </div>
@@ -350,7 +351,7 @@ export default function PGEnquiryTracker() {
 
                 {/* Note Area */}
                 {enquiry.note && (
-                  <div className="bg-yellow-50/50 border border-yellow-100 rounded-lg p-2 mb-3 ml-2">
+                  <div className="bg-yellow-50/50 border border-yellow-100 rounded-lg px-2.5 py-1.5 mb-3">
                     <p className="text-xs text-slate-600 line-clamp-2 italic">
                       "{enquiry.note}"
                     </p>
@@ -358,11 +359,11 @@ export default function PGEnquiryTracker() {
                 )}
 
                 {/* Action Buttons */}
-                <div className="flex gap-2 ml-2 mt-2 border-t border-slate-100 pt-3">
+                <div className="flex gap-2 mt-1 border-t border-slate-100 pt-3">
                   <a
                     href={`tel:${enquiry.number}`}
                     onClick={(e) => e.stopPropagation()}
-                    className="flex-1 bg-slate-50 hover:bg-blue-50 text-slate-600 hover:text-blue-600 border border-slate-200 hover:border-blue-200 py-2 rounded-xl flex items-center justify-center gap-2 text-xs font-semibold transition-all"
+                    className="flex-1 bg-slate-50 hover:bg-blue-50 text-slate-600 hover:text-blue-600 border border-slate-200 hover:border-blue-200 py-1.5 rounded-lg flex items-center justify-center gap-1.5 text-xs font-semibold transition-all"
                   >
                     <Phone className="w-3.5 h-3.5" />
                     Call
@@ -371,7 +372,7 @@ export default function PGEnquiryTracker() {
                   {!enquiry.completed ? (
                     <button
                       onClick={(e) => { e.stopPropagation(); handleComplete(enquiry.id); }}
-                      className="flex-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border border-emerald-200 py-2 rounded-xl flex items-center justify-center gap-2 text-xs font-semibold transition-all"
+                      className="flex-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border border-emerald-200 py-1.5 rounded-lg flex items-center justify-center gap-1.5 text-xs font-semibold transition-all"
                     >
                       <Check className="w-3.5 h-3.5" />
                       Done
@@ -379,7 +380,7 @@ export default function PGEnquiryTracker() {
                   ) : (
                     <button
                       onClick={(e) => { e.stopPropagation(); handleUndo(enquiry.id); }}
-                      className="flex-1 bg-amber-50 hover:bg-amber-100 text-amber-600 border border-amber-200 py-2 rounded-xl flex items-center justify-center gap-2 text-xs font-semibold transition-all"
+                      className="flex-1 bg-amber-50 hover:bg-amber-100 text-amber-600 border border-amber-200 py-1.5 rounded-lg flex items-center justify-center gap-1.5 text-xs font-semibold transition-all"
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
                       Undo
@@ -388,7 +389,7 @@ export default function PGEnquiryTracker() {
                   
                   <button
                     onClick={(e) => handleDeleteClick(e, enquiry.id)}
-                    className="w-10 flex items-center justify-center bg-rose-50 hover:bg-rose-100 text-rose-500 border border-rose-200 rounded-xl transition-all"
+                    className="w-9 flex items-center justify-center bg-rose-50 hover:bg-rose-100 text-rose-500 border border-rose-200 rounded-lg transition-all"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -398,7 +399,7 @@ export default function PGEnquiryTracker() {
           )}
         </div>
 
-        {/* --- Floating Action Button (Hide when searching to avoid clutter) --- */}
+        {/* --- Floating Action Button (Within Container) --- */}
         {!isSearchActive && (
           <button
             onClick={() => {
@@ -406,92 +407,92 @@ export default function PGEnquiryTracker() {
               setEditingId(null);
               setShowForm(true);
             }}
-            className="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg shadow-blue-600/30 flex items-center justify-center transition-transform hover:scale-110 active:scale-95 z-40 animate-fadeIn"
+            className="absolute bottom-6 right-6 w-12 h-12 bg-blue-600 text-white rounded-full shadow-lg shadow-blue-600/30 flex items-center justify-center transition-transform hover:scale-110 active:scale-95 z-40 animate-fadeIn"
           >
-            <Plus className="w-7 h-7" />
+            <Plus className="w-6 h-6" />
           </button>
         )}
 
         {/* --- Add/Edit Form Modal --- */}
         {showForm && (
           <div 
-            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-4 animate-fadeIn"
+            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-4 animate-fadeIn"
             onClick={() => setShowForm(false)}
           >
             <div 
-              className="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl animate-slideUp"
+              className="bg-white w-full max-w-sm rounded-3xl p-5 shadow-2xl animate-slideUp"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-slate-800">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-bold text-slate-800">
                   {editingId ? 'Edit Enquiry' : 'New Enquiry'}
                 </h2>
-                <button onClick={() => setShowForm(false)} className="p-2 bg-slate-100 rounded-full text-slate-500 hover:bg-slate-200 transition-colors">
-                  <X className="w-5 h-5" />
+                <button onClick={() => setShowForm(false)} className="p-1.5 bg-slate-100 rounded-full text-slate-500 hover:bg-slate-200 transition-colors">
+                  <X className="w-4 h-4" />
                 </button>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5 ml-1">Name</label>
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1 ml-1">Name</label>
                   <input
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="Enter visitor name"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                   />
                 </div>
 
                 <div>
-                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5 ml-1">Phone Number</label>
+                   <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1 ml-1">Phone Number</label>
                    <div className="relative">
-                      <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
                       <input
                         type="tel"
                         value={formData.number}
                         onChange={(e) => setFormData({ ...formData, number: e.target.value })}
                         placeholder="10 digit number"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-11 pr-4 py-3 text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2.5 text-sm text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                       />
                    </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5 ml-1">Date</label>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1 ml-1">Date</label>
                     <input
                       type="date"
                       value={formData.date}
                       onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5 ml-1">Time</label>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1 ml-1">Time</label>
                     <input
                       type="time"
                       value={formData.time}
                       onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5 ml-1">Note (Optional)</label>
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1 ml-1">Note (Optional)</label>
                   <textarea
                     rows="2"
                     value={formData.note}
                     onChange={(e) => setFormData({ ...formData, note: e.target.value })}
                     placeholder="Requirements, budget, source..."
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none"
                   />
                 </div>
 
                 <button
                   onClick={handleSubmit}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-600/30 transition-all active:scale-[0.98] mt-2"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-600/30 transition-all active:scale-[0.98] mt-2 text-sm"
                 >
                   {editingId ? 'Update Enquiry' : 'Save Enquiry'}
                 </button>
@@ -503,31 +504,31 @@ export default function PGEnquiryTracker() {
         {/* --- Delete Confirmation Modal --- */}
         {showDeleteConfirm && (
           <div 
-            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fadeIn"
+            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fadeIn"
             onClick={cancelDelete}
           >
             <div 
               className="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl animate-slideUp text-center"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="w-14 h-14 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <AlertTriangle className="w-7 h-7 text-rose-500" />
+              <div className="w-12 h-12 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <AlertTriangle className="w-6 h-6 text-rose-500" />
               </div>
-              <h3 className="text-lg font-bold text-slate-800 mb-2">Delete Enquiry?</h3>
-              <p className="text-slate-500 text-sm mb-6">
+              <h3 className="text-base font-bold text-slate-800 mb-1">Delete Enquiry?</h3>
+              <p className="text-slate-500 text-xs mb-5">
                 Are you sure? This action cannot be undone.
               </p>
               
               <div className="flex gap-3">
                 <button
                   onClick={cancelDelete}
-                  className="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition-colors"
+                  className="flex-1 py-2 rounded-xl border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition-colors text-sm"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={confirmDelete}
-                  className="flex-1 py-2.5 rounded-xl bg-rose-500 text-white font-semibold hover:bg-rose-600 shadow-lg shadow-rose-500/20 transition-colors"
+                  className="flex-1 py-2 rounded-xl bg-rose-500 text-white font-semibold hover:bg-rose-600 shadow-lg shadow-rose-500/20 transition-colors text-sm"
                 >
                   Delete
                 </button>

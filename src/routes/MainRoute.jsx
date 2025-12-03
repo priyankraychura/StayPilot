@@ -6,6 +6,11 @@ import WelcomePage from '../pages/WelcomePage';
 import LoginPage from '../pages/LoginPage';
 import SetPassword from '../pages/SetPassword';
 import PublicRoute from './PublicRoute';
+import NotificationPage from '../pages/NotificationPage';
+import MenuPage from '../pages/MenuPage';
+import UserProfile from '../pages/UserProfile';
+import PGDetailsPage from '../pages/PGDetailsPage';
+import PGEditPage from '../pages/PGEditPage';
 
 function PlaceholderPage({ title }) {
     return (
@@ -69,13 +74,17 @@ const MainRoute = () => {
             <Route path="/support" element={<PlaceholderPage title="Support" />} />
             <Route path="/settings" element={<PlaceholderPage title="Settings" />} />
             <Route path="/enquiries" element={<PGEnquiryTracker />} />
+            <Route path="/notifications" element={<NotificationPage />} />
+            <Route path="/menu" element={<MenuPage />} />
+            <Route path="/pg-details" element={<PGDetailsPage />} />
+            <Route path="/edit-pg" element={<PGEditPage />} />
 
             {/* Routes from the "QuickActions" section */}
             <Route path="/add-property" element={<PlaceholderPage title="Add Property" />} />
 
             {/* Routes from the "BottomNav" */}
             <Route path="/bookings" element={<PlaceholderPage title="My Bookings" />} />
-            <Route path="/profile" element={<PlaceholderPage title="My Profile" />} />
+            <Route path="/profile" element={<UserProfile />} />
             <Route path="/menu" element={<PlaceholderPage title="Food Menu" />} />
 
             {/* A catch-all route for any other URL */}

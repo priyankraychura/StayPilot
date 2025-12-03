@@ -23,7 +23,7 @@ import {
   Sparkles,
   MapPin
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, Links } from 'react-router-dom';
 
 // --- Components ---
 
@@ -38,10 +38,10 @@ function Header() {
       </div>
       
       <div className="flex items-center gap-3">
-        <button className="relative p-2 rounded-full bg-slate-50 text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+        <Link to='/notifications' className="relative p-2 rounded-full bg-slate-50 text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">
           <Bell className="w-5 h-5" />
           <span className="absolute top-1.5 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-        </button>
+        </Link>
         <button className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 p-[2px] shadow-md">
            <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
              <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" className="w-full h-full" />
@@ -101,7 +101,7 @@ function QuickActions() {
       </div>
       
       {/* Horizontal Scroll for Cards */}
-      <div className="flex gap-4 overflow-x-auto pb-4 -mx-6 px-6 scrollbar-hide snap-x snap-mandatory">
+      <div className="flex gap-4 overflow-x-auto pb-4 -mx-6 px-6 scrollbar-hide snap-x snap-mandatory touch-pan-x">
         {actions.map((action) => (
           <div
             key={action.title}
@@ -128,7 +128,7 @@ function Services() {
     { id: "/search", title: "Search", icon: <Search className="w-5 h-5 text-blue-600" />, color: "bg-blue-100", border: "border-blue-200" },
     { id: "#", title: "Complaints", icon: <ShieldAlert className="w-5 h-5 text-red-600" />, color: "bg-red-100", border: "border-red-200" },
     { id: "#", title: "Pay Rent", icon: <CreditCard className="w-5 h-5 text-green-600" />, color: "bg-green-100", border: "border-green-200" },
-    { id: "#", title: "Menu", icon: <UtensilsCrossed className="w-5 h-5 text-orange-600" />, color: "bg-orange-100", border: "border-orange-200" },
+    { id: "/menu", title: "Menu", icon: <UtensilsCrossed className="w-5 h-5 text-orange-600" />, color: "bg-orange-100", border: "border-orange-200" },
     { id: "#", title: "Visitors", icon: <Users className="w-5 h-5 text-indigo-600" />, color: "bg-indigo-100", border: "border-indigo-200" },
     { id: "#", title: "Notices", icon: <FileText className="w-5 h-5 text-yellow-600" />, color: "bg-yellow-100", border: "border-yellow-200" },
     { id: "#", title: "Support", icon: <LifeBuoy className="w-5 h-5 text-purple-600" />, color: "bg-purple-100", border: "border-purple-200" },
@@ -182,7 +182,7 @@ function NewsAndTips() {
           </h3>
       </div>
 
-      <div className="flex gap-4 overflow-x-auto px-6 pb-6 scrollbar-hide snap-x snap-mandatory">
+      <div className="flex gap-4 overflow-x-auto px-6 pb-6 scrollbar-hide snap-x snap-mandatory touch-pan-x">
         {articles.map((article) => (
           <div
             key={article.title}
@@ -251,19 +251,10 @@ function SocialMedia() {
   );
 }
 
-function BottomNav() {
-  const [active, setActive] = useState("Home");
-  
-  const navItems = [
-    { name: "Home", icon: Home },
-    { name: "Bookings", icon: Building },
-    { name: "Profile", icon: User },
-    { name: "Menu", icon: Menu },
-  ];
-
+function BottomNav({ active, setActive, navItems }) {
   return (
-    <div className="fixed bottom-6 left-0 right-0 z-40 px-6 pointer-events-none">
-        <nav className="max-w-[400px] mx-auto bg-white/90 backdrop-blur-xl border border-white/40 shadow-xl shadow-slate-200/50 rounded-full py-3 px-6 flex justify-between items-center pointer-events-auto">
+    <div className="fixed bottom-5 left-0 right-0 z-40 px-6 pointer-events-none">
+        <nav className="max-w-[360px] mx-auto bg-white border border-slate-200 shadow-2xl shadow-blue-900/10 rounded-full py-3 px-6 flex justify-between items-center pointer-events-auto">
             {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = active === item.name;
@@ -275,12 +266,12 @@ function BottomNav() {
                     >
                         <div className={`
                             p-2.5 rounded-full transition-all duration-300
-                            ${isActive ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' : 'text-slate-400'}
+                            ${isActive ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 ring-2 ring-white' : 'text-slate-400'}
                         `}>
                             <Icon className="w-5 h-5" strokeWidth={2.5} />
                         </div>
                         {isActive && (
-                            <span className="absolute -bottom-4 text-[10px] font-bold text-blue-600 animate-in fade-in slide-in-from-top-1">
+                            <span className="absolute -bottom-4 text-[10px] font-bold text-blue-600 animate-in fade-in slide-in-from-top-1 whitespace-nowrap">
                                 {item.name}
                             </span>
                         )}
@@ -296,8 +287,57 @@ function BottomNav() {
 // --- Main App Component ---
 
 export default function Dashboard() {
+  const [activeTab, setActiveTab] = useState("Home");
+  
+  const navItems = [
+    { name: "Home", icon: Home },
+    { name: "Bookings", icon: Building },
+    { name: "Profile", icon: User },
+    { name: "Menu", icon: Menu },
+  ];
+
+  // --- Swipe Logic ---
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e) => {
+    setTouchEnd(null); 
+    setTouchStart(e.targetTouches[0].clientX);
+  }
+
+  const onTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX);
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    
+    // Find current index
+    const currentIndex = navItems.findIndex(item => item.name === activeTab);
+    
+    if (isLeftSwipe) {
+       // Swipe Left -> Next Tab
+       if (currentIndex < navItems.length - 1) {
+           setActiveTab(navItems[currentIndex + 1].name);
+       }
+    }
+    if (isRightSwipe) {
+       // Swipe Right -> Prev Tab
+       if (currentIndex > 0) {
+           setActiveTab(navItems[currentIndex - 1].name);
+       }
+    }
+  }
+
   return (
-    <div className="font-sans bg-slate-50 min-h-screen w-full relative overflow-x-hidden">
+    <div 
+      className="font-sans bg-slate-50 min-h-screen w-full relative overflow-x-hidden touch-pan-y"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
       
       {/* Background Decor - Blobs */}
       <div className="fixed top-[-10%] right-[-5%] w-96 h-96 bg-blue-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob pointer-events-none"></div>
@@ -305,7 +345,7 @@ export default function Dashboard() {
       <div className="fixed top-[40%] left-[20%] w-72 h-72 bg-pink-200/30 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000 pointer-events-none"></div>
 
       {/* Main Content Wrapper - Simulates Mobile Width on Desktop */}
-      <div className="max-w-lg mx-auto bg-white/30 min-h-screen relative shadow-2xl">
+      <div className="max-w-lg mx-auto bg-white/30 min-h-screen relative shadow-2xl transition-all duration-300">
         <Header />
         
         <main className="pb-32"> {/* Extra padding for floating nav */}
@@ -316,7 +356,7 @@ export default function Dashboard() {
           <SocialMedia />
         </main>
         
-        <BottomNav />
+        <BottomNav active={activeTab} setActive={setActiveTab} navItems={navItems} />
       </div>
 
        {/* Tailwind Animations */}
