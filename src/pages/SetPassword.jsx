@@ -8,7 +8,6 @@ import {
   BrainCircuit, 
   MailCheck, 
   ShieldCheck,
-  ChevronRight,
   KeyRound
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -103,7 +102,6 @@ export default function SetPassword() {
   const handleResetSubmit = (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      // In a real app, set an error state here
       alert("Passwords don't match!"); 
       return;
     }
@@ -116,52 +114,58 @@ export default function SetPassword() {
     }, 1000);
   };
 
-  return (
-    <div className="min-h-screen w-full bg-slate-50 relative flex items-center justify-center p-4 overflow-hidden font-sans">
-      
-      {/* Background Decor - Blobs */}
-      <div className="absolute top-[-10%] right-[-5%] w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-      <div className="absolute bottom-[-10%] left-[-10%] w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+  const handleBack = () => {
+    if (step === 'email') navigate('/login');
+    else if (step === 'otp') setStep('email');
+    else if (step === 'reset') setStep('otp');
+  };
 
-      {/* Main Card */}
-      <div className="relative w-full max-w-[420px] bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 flex flex-col transition-all duration-300 min-h-[500px]">
-        
-        {/* --- Header Navigation --- */}
-        <div className="absolute top-6 left-6 z-20">
-            <button 
-                onClick={() => step === 'email' ? navigate('/login') : setStep(step === 'reset' ? 'otp' : 'email')} 
-                className="p-2 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
-            >
-                <ArrowLeft className="w-5 h-5" />
-            </button>
-        </div>
+  return (
+    <div className="min-h-screen w-full bg-slate-50 flex flex-col items-center relative overflow-hidden font-sans">
+      
+      {/* Background Decor */}
+      <div className="fixed top-[-10%] right-[-5%] w-[500px] h-[500px] bg-blue-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob pointer-events-none"></div>
+      <div className="fixed bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-purple-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-2000 pointer-events-none"></div>
+
+      {/* Header (Native-like Top Bar) */}
+      <div className="w-full max-w-md px-4 pt-6 pb-2 z-20 flex items-center">
+        <button 
+          onClick={handleBack}
+          className="p-2 -ml-2 rounded-full text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
+        >
+          <ArrowLeft className="w-6 h-6" />
+        </button>
+      </div>
+
+      {/* Main Content Wrapper */}
+      <div className="w-full max-w-md flex-grow flex flex-col px-6 pb-8 z-10 relative">
 
         {/* --- STEP 1: EMAIL INPUT --- */}
         {step === 'email' && (
-          <form className="flex flex-col flex-grow animate-in fade-in slide-in-from-right-4 duration-300" onSubmit={handleEmailSubmit}>
-            <div className="flex-grow flex flex-col items-center mt-8">
-                <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 shadow-inner">
-                    <BrainCircuit className="w-8 h-8 text-blue-600" />
+          <form className="flex flex-col h-full animate-in fade-in slide-in-from-right-8 duration-300" onSubmit={handleEmailSubmit}>
+            <div className="flex-grow flex flex-col pt-4">
+                <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-blue-600/20">
+                    <BrainCircuit className="w-8 h-8 text-white" />
                 </div>
                 
-                <h2 className="text-2xl font-bold text-slate-800 text-center mb-2">Forgot Password?</h2>
-                <p className="text-slate-500 text-center text-sm mb-8 px-4">
+                <h1 className="text-3xl font-bold text-slate-900 mb-3 tracking-tight">Forgot Password?</h1>
+                <p className="text-slate-500 text-base leading-relaxed mb-8">
                     Don't worry! It happens. Please enter the email associated with your account.
                 </p>
                 
-                <div className="w-full space-y-4">
+                <div className="space-y-6">
                     <div className="group">
-                        <label className="block text-xs font-semibold text-slate-500 mb-1.5 ml-1">Email Address</label>
+                        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2 ml-1">Email Address</label>
                         <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <Mail className="w-5 h-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+                                <Mail className="w-5 h-5 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                             </div>
                             <input
                                 type="email"
                                 placeholder="Enter your email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all duration-200 text-sm font-medium"
+                                className="w-full pl-11 pr-4 py-4 bg-white border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all text-base font-medium shadow-sm"
                                 required
                             />
                         </div>
@@ -169,8 +173,8 @@ export default function SetPassword() {
                 </div>
             </div>
 
-            <div className="mt-8">
-                <button type="submit" disabled={isLoading} className="w-full py-3.5 px-4 text-base font-bold text-white bg-blue-600 rounded-2xl shadow-lg shadow-blue-600/30 hover:bg-blue-700 hover:shadow-blue-600/40 focus:outline-none focus:ring-4 focus:ring-blue-500/20 active:scale-[0.98] transition-all duration-200 flex items-center justify-center">
+            <div className="mt-auto pt-6">
+                <button type="submit" disabled={isLoading} className="w-full py-4 px-4 text-base font-bold text-white bg-blue-600 rounded-2xl shadow-lg shadow-blue-600/30 hover:bg-blue-700 hover:shadow-blue-600/40 focus:outline-none focus:ring-4 focus:ring-blue-500/20 active:scale-[0.98] transition-all duration-200 flex items-center justify-center">
                     {isLoading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : "Send Code"}
                 </button>
             </div>
@@ -179,18 +183,18 @@ export default function SetPassword() {
 
         {/* --- STEP 2: OTP VERIFICATION --- */}
         {step === 'otp' && (
-          <form className="flex flex-col flex-grow animate-in fade-in slide-in-from-right-4 duration-300" onSubmit={handleOtpSubmit}>
-             <div className="flex-grow flex flex-col items-center mt-8">
-                <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mb-6 shadow-inner">
-                    <MailCheck className="w-8 h-8 text-green-600" />
+          <form className="flex flex-col h-full animate-in fade-in slide-in-from-right-8 duration-300" onSubmit={handleOtpSubmit}>
+             <div className="flex-grow flex flex-col pt-4">
+                <div className="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/20">
+                    <MailCheck className="w-8 h-8 text-white" />
                 </div>
                 
-                <h2 className="text-2xl font-bold text-slate-800 text-center mb-2">Check your email</h2>
-                <p className="text-slate-500 text-center text-sm mb-8 px-2">
-                    We sent a code to <span className="font-semibold text-slate-700">{email || "your email"}</span>. Enter 6 digit code below.
+                <h1 className="text-3xl font-bold text-slate-900 mb-3 tracking-tight">Check your email</h1>
+                <p className="text-slate-500 text-base leading-relaxed mb-8">
+                    We sent a code to <span className="font-semibold text-slate-900">{email || "your email"}</span>. Enter the 6 digit code below.
                 </p>
 
-                <div className="flex justify-center gap-2 mb-2 w-full" onPaste={handlePaste}>
+                <div className="flex justify-between gap-2 mb-8 w-full" onPaste={handlePaste}>
                     {otp.map((digit, index) => (
                         <input 
                             key={index}
@@ -201,25 +205,25 @@ export default function SetPassword() {
                             value={digit}
                             onChange={e => handleOtpChange(e, index)}
                             onKeyDown={e => handleOtpKeyDown(e, index)}
-                            className="w-11 h-14 bg-slate-50 border border-slate-200 rounded-xl text-center text-2xl font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:bg-white transition-all shadow-sm"
+                            className="w-12 h-16 bg-white border border-slate-200 rounded-2xl text-center text-2xl font-bold text-slate-800 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all shadow-sm"
                             required
                         />
                     ))}
                 </div>
                 
-                <div className="mt-6 text-center">
-                     <p className="text-sm text-slate-500">
+                <div className="text-center">
+                     <p className="text-sm text-slate-500 font-medium">
                         Didn't receive code?{' '}
-                        <button type="button" className="font-bold text-blue-600 hover:text-blue-700 transition-colors">
+                        <button type="button" className="font-bold text-blue-600 hover:text-blue-700 transition-colors ml-1">
                             Resend
                         </button>
                     </p>
                 </div>
             </div>
 
-            <div className="mt-8">
-                <button type="submit" disabled={isLoading} className="w-full py-3.5 px-4 text-base font-bold text-white bg-blue-600 rounded-2xl shadow-lg shadow-blue-600/30 hover:bg-blue-700 hover:shadow-blue-600/40 focus:outline-none focus:ring-4 focus:ring-blue-500/20 active:scale-[0.98] transition-all duration-200 flex items-center justify-center">
-                     {isLoading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : "Verify Code"}
+            <div className="mt-auto pt-6">
+                <button type="submit" disabled={isLoading} className="w-full py-4 px-4 text-base font-bold text-white bg-blue-600 rounded-2xl shadow-lg shadow-blue-600/30 hover:bg-blue-700 hover:shadow-blue-600/40 focus:outline-none focus:ring-4 focus:ring-blue-500/20 active:scale-[0.98] transition-all duration-200 flex items-center justify-center">
+                      {isLoading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : "Verify Code"}
                 </button>
             </div>
           </form>
@@ -227,30 +231,30 @@ export default function SetPassword() {
 
         {/* --- STEP 3: RESET PASSWORD --- */}
         {step === 'reset' && (
-          <form className="flex flex-col flex-grow animate-in fade-in slide-in-from-right-4 duration-300" onSubmit={handleResetSubmit}>
-             <div className="flex-grow flex flex-col items-center mt-8">
-                <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mb-6 shadow-inner">
-                    <ShieldCheck className="w-8 h-8 text-purple-600" />
+          <form className="flex flex-col h-full animate-in fade-in slide-in-from-right-8 duration-300" onSubmit={handleResetSubmit}>
+             <div className="flex-grow flex flex-col pt-4">
+                <div className="w-16 h-16 bg-purple-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-purple-600/20">
+                    <ShieldCheck className="w-8 h-8 text-white" />
                 </div>
                 
-                <h2 className="text-2xl font-bold text-slate-800 text-center mb-2">Set new password</h2>
-                <p className="text-slate-500 text-center text-sm mb-8">
-                    Must be at least 8 characters.
+                <h1 className="text-3xl font-bold text-slate-900 mb-3 tracking-tight">Set new password</h1>
+                <p className="text-slate-500 text-base leading-relaxed mb-8">
+                    Your new password must be at least 8 characters long.
                 </p>
 
-                <div className="w-full space-y-4">
+                <div className="space-y-6">
                      <div className="group">
-                        <label className="block text-xs font-semibold text-slate-500 mb-1.5 ml-1">New Password</label>
+                        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2 ml-1">New Password</label>
                         <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <Lock className="w-5 h-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+                                <Lock className="w-5 h-5 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                             </div>
                             <input
                                 type={showPass ? 'text' : 'password'}
                                 placeholder="Min. 8 characters"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full pl-11 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all duration-200 text-sm font-medium"
+                                className="w-full pl-11 pr-12 py-4 bg-white border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all text-base font-medium shadow-sm"
                                 required
                             />
                             <button
@@ -264,17 +268,17 @@ export default function SetPassword() {
                     </div>
 
                     <div className="group">
-                        <label className="block text-xs font-semibold text-slate-500 mb-1.5 ml-1">Confirm Password</label>
+                        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2 ml-1">Confirm Password</label>
                         <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <KeyRound className="w-5 h-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+                                <KeyRound className="w-5 h-5 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                             </div>
                             <input
                                 type={showConfirmPass ? 'text' : 'password'}
                                 placeholder="Re-enter password"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                className="w-full pl-11 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all duration-200 text-sm font-medium"
+                                className="w-full pl-11 pr-12 py-4 bg-white border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all text-base font-medium shadow-sm"
                                 required
                             />
                              <button
@@ -289,8 +293,8 @@ export default function SetPassword() {
                 </div>
             </div>
 
-            <div className="mt-8">
-                <button type="submit" disabled={isLoading} className="w-full py-3.5 px-4 text-base font-bold text-white bg-blue-600 rounded-2xl shadow-lg shadow-blue-600/30 hover:bg-blue-700 hover:shadow-blue-600/40 focus:outline-none focus:ring-4 focus:ring-blue-500/20 active:scale-[0.98] transition-all duration-200 flex items-center justify-center">
+            <div className="mt-auto pt-6">
+                <button type="submit" disabled={isLoading} className="w-full py-4 px-4 text-base font-bold text-white bg-blue-600 rounded-2xl shadow-lg shadow-blue-600/30 hover:bg-blue-700 hover:shadow-blue-600/40 focus:outline-none focus:ring-4 focus:ring-blue-500/20 active:scale-[0.98] transition-all duration-200 flex items-center justify-center">
                      {isLoading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : "Reset Password"}
                 </button>
             </div>
@@ -299,7 +303,7 @@ export default function SetPassword() {
         
       </div>
 
-       {/* Tailwind Custom Animations for Blob (Required if you don't have them in tailwind.config.js) */}
+       {/* Tailwind Custom Animations */}
        <style>{`
         @keyframes blob {
           0% { transform: translate(0px, 0px) scale(1); }
