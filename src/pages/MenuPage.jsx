@@ -5,10 +5,9 @@ import {
   Sun, 
   Moon, 
   CalendarDays,
-  ChevronRight,
-  Utensils,
   Edit2,
-  Save
+  Save,
+  Utensils
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -30,7 +29,7 @@ const styles = `
   }
 `;
 
-// Initial Menu Data
+// Initial Menu Data based on the provided PDF
 const INITIAL_MENU_DATA = {
   1: { // Week 1
     Monday: { breakfast: "Meggie", lunch: "Vege, Daal rice", dinner: "Mix veg, Paratha" },
@@ -54,7 +53,7 @@ const INITIAL_MENU_DATA = {
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-// MealCard Component extracted outside to prevent re-renders losing focus
+// Extracted MealCard to maintain focus state
 const MealCard = ({ title, type, item, icon: Icon, colorClass, delay, isEditing, onUpdate }) => (
   <div 
     className={`animate-slideUp relative bg-white/70 backdrop-blur-md border border-white/60 rounded-3xl p-5 shadow-sm overflow-hidden group hover:shadow-md transition-all active:scale-[0.98]`}
@@ -65,7 +64,7 @@ const MealCard = ({ title, type, item, icon: Icon, colorClass, delay, isEditing,
       </div>
       
       <div className="relative z-10 flex gap-4 items-center">
-          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm ${colorClass} bg-opacity-20`}>
+          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm ${colorClass} bg-opacity-20 flex-shrink-0`}>
               <Icon className={`w-7 h-7 ${colorClass.replace('bg-', 'text-').replace('-100', '-600')}`} />
           </div>
           <div className="flex-1 min-w-0">
@@ -75,7 +74,7 @@ const MealCard = ({ title, type, item, icon: Icon, colorClass, delay, isEditing,
                   type="text"
                   value={item}
                   onChange={(e) => onUpdate(type, e.target.value)}
-                  className="w-full bg-white/50 border-b-2 border-orange-200 focus:border-orange-500 rounded-md px-1 text-lg font-bold text-slate-800 leading-tight focus:outline-none transition-colors"
+                  className="w-full bg-white/50 border-b-2 border-orange-200 focus:border-orange-500 rounded-md px-1 py-0.5 text-lg font-bold text-slate-800 leading-tight focus:outline-none transition-colors"
                 />
               ) : (
                 <p className="text-lg font-bold text-slate-800 leading-tight break-words">{item}</p>
@@ -115,6 +114,11 @@ export default function MenuPage() {
     }));
   };
 
+  const handleSave = () => {
+    console.log("Saving Menu Data:", menuData);
+    setIsEditing(false);
+  };
+
   // Safe fallback if data is missing for a specific day
   const currentMenu = menuData[selectedWeek][selectedDay] || { breakfast: "", lunch: "", dinner: "" };
 
@@ -145,16 +149,16 @@ export default function MenuPage() {
             
             <div className="flex items-center gap-2">
               {/* Week Toggle */}
-              <div className="flex bg-slate-100 p-1 rounded-full border border-slate-200">
+              <div className="flex bg-slate-100 p-1 rounded-full border border-slate-200 shadow-inner">
                   <button 
                       onClick={() => setSelectedWeek(1)}
-                      className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${selectedWeek === 1 ? 'bg-white text-orange-600 shadow-sm' : 'text-slate-400'}`}
+                      className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${selectedWeek === 1 ? 'bg-white text-orange-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                   >
                       W1
                   </button>
                   <button 
                       onClick={() => setSelectedWeek(2)}
-                      className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${selectedWeek === 2 ? 'bg-white text-orange-600 shadow-sm' : 'text-slate-400'}`}
+                      className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${selectedWeek === 2 ? 'bg-white text-orange-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                   >
                       W2
                   </button>
@@ -162,8 +166,12 @@ export default function MenuPage() {
 
               {/* Edit Toggle */}
               <button 
-                onClick={() => setIsEditing(!isEditing)}
-                className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${isEditing ? 'bg-orange-500 text-white shadow-md' : 'bg-slate-100 text-slate-500 hover:bg-white border border-slate-200'}`}
+                onClick={isEditing ? handleSave : () => setIsEditing(true)}
+                className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
+                    isEditing 
+                    ? 'bg-orange-500 text-white shadow-md shadow-orange-500/30' 
+                    : 'bg-white/50 hover:bg-white text-slate-600 border border-white/50 shadow-sm'
+                }`}
               >
                 {isEditing ? <Save className="w-4 h-4" /> : <Edit2 className="w-4 h-4" />}
               </button>
@@ -183,11 +191,11 @@ export default function MenuPage() {
                             onClick={() => setSelectedDay(day)}
                             className={`snap-center flex-shrink-0 flex flex-col items-center justify-center w-14 h-16 rounded-2xl border transition-all duration-300 ${
                                 isSelected 
-                                ? 'bg-orange-500 border-orange-600 text-white shadow-lg shadow-orange-500/30 scale-105' 
-                                : 'bg-white/60 border-white/60 text-slate-500 hover:bg-white'
+                                ? 'bg-gradient-to-br from-orange-500 to-orange-600 border-orange-500 text-white shadow-lg shadow-orange-500/30 scale-105' 
+                                : 'bg-white/60 border-white/60 text-slate-500 hover:bg-white hover:border-orange-200'
                             }`}
                         >
-                            <span className="text-[10px] font-medium opacity-80">{shortDay}</span>
+                            <span className={`text-[10px] font-medium ${isSelected ? 'opacity-80' : 'opacity-60'}`}>{shortDay}</span>
                             <span className={`text-lg font-bold ${isSelected ? 'text-white' : 'text-slate-800'}`}>
                                 {index + 1}
                             </span>
@@ -204,7 +212,7 @@ export default function MenuPage() {
                 <h2 className="text-xl font-bold text-slate-800">
                     {selectedDay}'s Special
                 </h2>
-                <div className="flex items-center gap-1 text-xs font-medium text-orange-600 bg-orange-50 px-2 py-1 rounded-lg border border-orange-100">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-orange-600 bg-orange-50 px-3 py-1.5 rounded-xl border border-orange-100 shadow-sm">
                     <CalendarDays className="w-3.5 h-3.5" />
                     Week {selectedWeek}
                 </div>
@@ -247,9 +255,12 @@ export default function MenuPage() {
 
         {/* --- Footer Note --- */}
         <div className="px-6 pb-6 text-center">
-             <p className="text-[10px] text-slate-400">
-                Menu is subject to change based on vegetable availability.
-             </p>
+             <div className="inline-flex items-center gap-2 bg-slate-50 px-3 py-2 rounded-lg border border-slate-100">
+                <Utensils className="w-3 h-3 text-slate-400" />
+                <p className="text-[10px] text-slate-400 font-medium">
+                    Menu is subject to change based on availability.
+                </p>
+             </div>
         </div>
 
       </div>

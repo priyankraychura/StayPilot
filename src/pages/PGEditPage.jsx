@@ -13,12 +13,11 @@ import {
   Plus,
   Save,
   Image as ImageIcon,
-  QrCode,
-  Trash2,
   CheckCircle2,
   Shirt, // Laundry
   Car, // Parking
-  Dumbbell // Gym
+  Dumbbell, // Gym
+  Trash2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -46,7 +45,7 @@ const ALL_AMENITIES = [
   { id: 'gym', name: "Gym", icon: Dumbbell },
 ];
 
-// Initial Data (Simulating existing data for Edit Mode)
+// Initial Data
 const INITIAL_DATA = {
   name: "The Clover House",
   type: "Luxury Co-living",
@@ -60,23 +59,10 @@ const INITIAL_DATA = {
     "Gate closes at 10:30 PM strictly.",
     "No loud music after 11:00 PM.",
     "Guests allowed only in common areas."
-  ],
-  bankDetails: {
-    accountName: "The Clover House",
-    accountNumber: "123456789012",
-    ifsc: "HDFC0001234",
-    bank: "HDFC Bank, Viman Nagar",
-    upiId: "cloverhouse@hdfc",
-    qrCode: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=cloverhouse@hdfc&pn=TheCloverHouse" 
-  },
-  // CHANGED: Now an array of objects
-  wifiDetails: [
-    { ssid: "Clover_5G", password: "clover_guest_123" },
-    { ssid: "Clover_2.4G", password: "clover_guest_123" }
   ]
 };
 
-// --- Extracted Component (Fixes Focus Issue) ---
+// --- Extracted Component ---
 const InputField = ({ label, value, onChange, placeholder, type = "text", className = "" }) => (
   <div className={`space-y-1.5 ${className}`}>
     <label className="text-xs font-bold text-slate-500 uppercase tracking-wide ml-1">{label}</label>
@@ -94,7 +80,6 @@ export default function PGEditPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState(INITIAL_DATA);
   const fileInputRef = useRef(null);
-  const qrInputRef = useRef(null);
 
   // --- Handlers ---
 
@@ -137,22 +122,6 @@ export default function PGEditPage() {
     setFormData(prev => ({ ...prev, rules: newRules }));
   };
 
-  // Wifi Management
-  const handleAddWifi = () => {
-    setFormData(prev => ({ ...prev, wifiDetails: [...prev.wifiDetails, { ssid: '', password: '' }] }));
-  };
-
-  const handleWifiChange = (index, field, value) => {
-    const newWifi = [...formData.wifiDetails];
-    newWifi[index][field] = value;
-    setFormData(prev => ({ ...prev, wifiDetails: newWifi }));
-  };
-
-  const handleRemoveWifi = (index) => {
-    const newWifi = formData.wifiDetails.filter((_, i) => i !== index);
-    setFormData(prev => ({ ...prev, wifiDetails: newWifi }));
-  };
-
   // Image Upload Simulation
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -169,21 +138,9 @@ export default function PGEditPage() {
     }));
   };
 
-  const handleQrUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setFormData(prev => ({ 
-        ...prev, 
-        bankDetails: { ...prev.bankDetails, qrCode: url } 
-      }));
-    }
-  };
-
   const handleSave = () => {
-    console.log("Saving Data:", formData);
-    // Add API call here
-    navigate(-1); // Go back to details page
+    console.log("Saving Property Data:", formData);
+    navigate(-1);
   };
 
   return (
@@ -313,60 +270,7 @@ export default function PGEditPage() {
                 </div>
             </section>
 
-            {/* --- 4. Payment Details --- */}
-            <section className="space-y-4">
-                <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                    <QrCode className="w-4 h-4 text-blue-500" /> Payment & QR
-                </h3>
-                
-                <div className="flex gap-4">
-                    {/* QR Upload Area */}
-                    <div 
-                        onClick={() => qrInputRef.current.click()}
-                        className="w-24 h-24 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 flex flex-col items-center justify-center text-slate-400 cursor-pointer overflow-hidden relative hover:bg-blue-50 hover:border-blue-300 hover:text-blue-500 transition-all flex-shrink-0"
-                    >
-                        {formData.bankDetails.qrCode ? (
-                            <img src={formData.bankDetails.qrCode} alt="QR" className="w-full h-full object-contain p-1" />
-                        ) : (
-                            <>
-                                <Upload className="w-5 h-5 mb-1" />
-                                <span className="text-[9px] font-bold text-center">Upload QR</span>
-                            </>
-                        )}
-                        <input type="file" ref={qrInputRef} className="hidden" accept="image/*" onChange={handleQrUpload} />
-                    </div>
-
-                    <div className="flex-1 space-y-3">
-                        <InputField 
-                            label="UPI ID" 
-                            value={formData.bankDetails.upiId} 
-                            onChange={(val) => handleInputChange('bankDetails', 'upiId', val)} 
-                            placeholder="user@upi"
-                        />
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                    <InputField 
-                        label="Account No." 
-                        value={formData.bankDetails.accountNumber} 
-                        onChange={(val) => handleInputChange('bankDetails', 'accountNumber', val)} 
-                        className="col-span-2"
-                    />
-                    <InputField 
-                        label="IFSC Code" 
-                        value={formData.bankDetails.ifsc} 
-                        onChange={(val) => handleInputChange('bankDetails', 'ifsc', val)} 
-                    />
-                    <InputField 
-                        label="Bank Name" 
-                        value={formData.bankDetails.bank} 
-                        onChange={(val) => handleInputChange('bankDetails', 'bank', val)} 
-                    />
-                </div>
-            </section>
-
-            {/* --- 5. House Rules --- */}
+            {/* --- 4. House Rules --- */}
             <section className="space-y-3">
                 <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
                     <ShieldCheck className="w-4 h-4 text-blue-500" /> House Rules
@@ -394,47 +298,6 @@ export default function PGEditPage() {
                         className="w-full py-2 border-2 border-dashed border-slate-200 rounded-xl text-slate-400 text-xs font-bold hover:border-blue-300 hover:text-blue-500 transition-all flex items-center justify-center gap-1"
                     >
                         <Plus className="w-3 h-3" /> Add Rule
-                    </button>
-                </div>
-            </section>
-
-            {/* --- 6. Wifi Details (UPDATED for Multiple) --- */}
-            <section className="space-y-3">
-                <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                    <Wifi className="w-4 h-4 text-blue-500" /> Wi-Fi Networks
-                </h3>
-                
-                <div className="space-y-4">
-                    {formData.wifiDetails.map((wifi, idx) => (
-                        <div key={idx} className="relative bg-slate-50 rounded-xl p-3 border border-slate-200">
-                            {/* Remove Button (Only show if more than 1, or always show for consistency) */}
-                            <button 
-                                onClick={() => handleRemoveWifi(idx)}
-                                className="absolute top-2 right-2 p-1 text-slate-400 hover:text-rose-500 transition-colors"
-                            >
-                                <X className="w-3.5 h-3.5" />
-                            </button>
-
-                            <div className="grid grid-cols-2 gap-3 pr-6">
-                                <InputField 
-                                    label="Network SSID" 
-                                    value={wifi.ssid} 
-                                    onChange={(val) => handleWifiChange(idx, 'ssid', val)} 
-                                />
-                                <InputField 
-                                    label="Password" 
-                                    value={wifi.password} 
-                                    onChange={(val) => handleWifiChange(idx, 'password', val)} 
-                                />
-                            </div>
-                        </div>
-                    ))}
-                    
-                    <button 
-                        onClick={handleAddWifi}
-                        className="w-full py-2 border-2 border-dashed border-slate-200 rounded-xl text-slate-400 text-xs font-bold hover:border-blue-300 hover:text-blue-500 transition-all flex items-center justify-center gap-1"
-                    >
-                        <Plus className="w-3 h-3" /> Add Another Network
                     </button>
                 </div>
             </section>

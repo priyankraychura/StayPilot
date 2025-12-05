@@ -1,16 +1,22 @@
 import React from 'react'
-import { Link, Route, Routes } from 'react-router-dom';
+import { Link, Route, Routes, Navigate } from 'react-router-dom';
 import PGEnquiryTracker from '../pages/PGEnquiryTracker';
-import Dashboard from '../pages/Dashboard';
-import WelcomePage from '../pages/WelcomePage';
 import LoginPage from '../pages/LoginPage';
+import WelcomePage from '../pages/WelcomePage';
 import SetPassword from '../pages/SetPassword';
-import PublicRoute from './PublicRoute';
-import NotificationPage from '../pages/NotificationPage';
-import MenuPage from '../pages/MenuPage';
+import Dashboard from '../pages/Dashboard';
 import UserProfile from '../pages/UserProfile';
+import NavMenuPage from '../pages/NavMenuPage';
 import PGDetailsPage from '../pages/PGDetailsPage';
+import RentPaymentPage from '../pages/RentPaymentPage';
+import WifiDetailsPage from '../pages/WifiDetailsPage';
+import NotificationPage from '../pages/NotificationPage';
+import PublicRoute from './PublicRoute';
+import BottomNavLayout from '../pages/BottomNavLayout';
 import PGEditPage from '../pages/PGEditPage';
+import MenuPage from '../pages/MenuPage';
+import TenantListPage from '../pages/TenantListPage';
+import TenantDetailsPage from '../pages/TenantDetailsPage';
 
 function PlaceholderPage({ title }) {
     return (
@@ -18,10 +24,10 @@ function PlaceholderPage({ title }) {
             <h1 className="text-3xl font-bold text-blue-600 mb-4">{title}</h1>
             <p className="text-gray-600 mb-8">This page is under construction.</p>
             <Link
-                to="/"
+                to="/dashboard"
                 className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition-colors"
             >
-                Go Back Home
+                Go to Dashboard
             </Link>
         </div>
     );
@@ -30,6 +36,7 @@ function PlaceholderPage({ title }) {
 const MainRoute = () => {
     return (
         <Routes>
+            {/* --- Public Routes --- */}
             <Route
                 path="/login"
                 element={
@@ -62,10 +69,31 @@ const MainRoute = () => {
                     </PublicRoute>
                 }
             />
-            {/* The main dashboard page */}
-            <Route path="/dashboard" element={<Dashboard />} />
 
-            {/* Routes from the "Services" section */}
+            {/* --- Bottom Navigation Layout Routes --- */}
+            {/* These pages will show the Bottom Navbar & Background */}
+            <Route element={<BottomNavLayout />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/bookings" element={<PlaceholderPage title="My Bookings" />} />
+                <Route path="/profile" element={<UserProfile />} />
+                <Route path="/nav-menu" element={<NavMenuPage />} />
+            </Route>
+
+             {/* --- Feature Pages --- */}
+            <Route path="/tenants" element={<TenantListPage />} />             {/* <--- Tenant List */}
+            <Route path="/tenant-details/:id" element={<TenantDetailsPage />} /> {/* <--- Tenant Details (New & Edit) */}
+
+            {/* --- Full Screen Detail Pages (No Bottom Nav) --- */}
+            {/* These sit on top of the layout for specific tasks */}
+            <Route path="/pg-details" element={<PGDetailsPage />} />
+            <Route path="/edit-pg" element={<PGEditPage />} />
+            <Route path="/rent-payment" element={<RentPaymentPage />} />
+            <Route path="/wifi-details" element={<WifiDetailsPage />} />
+            <Route path="/menu" element={<MenuPage />} />
+            <Route path="/enquiries" element={<PGEnquiryTracker />} />
+            <Route path="/notifications" element={<NotificationPage />} />
+
+            {/* --- Other Service Placeholders --- */}
             <Route path="/search" element={<PlaceholderPage title="Search PG" />} />
             <Route path="/complaints" element={<PlaceholderPage title="Complaints" />} />
             <Route path="/pay-rent" element={<PlaceholderPage title="Pay Rent" />} />
@@ -73,24 +101,12 @@ const MainRoute = () => {
             <Route path="/notices" element={<PlaceholderPage title="Notices" />} />
             <Route path="/support" element={<PlaceholderPage title="Support" />} />
             <Route path="/settings" element={<PlaceholderPage title="Settings" />} />
-            <Route path="/enquiries" element={<PGEnquiryTracker />} />
-            <Route path="/notifications" element={<NotificationPage />} />
-            <Route path="/menu" element={<MenuPage />} />
-            <Route path="/pg-details" element={<PGDetailsPage />} />
-            <Route path="/edit-pg" element={<PGEditPage />} />
-
-            {/* Routes from the "QuickActions" section */}
             <Route path="/add-property" element={<PlaceholderPage title="Add Property" />} />
 
-            {/* Routes from the "BottomNav" */}
-            <Route path="/bookings" element={<PlaceholderPage title="My Bookings" />} />
-            <Route path="/profile" element={<UserProfile />} />
-            <Route path="/menu" element={<PlaceholderPage title="Food Menu" />} />
-
-            {/* A catch-all route for any other URL */}
+            {/* --- Catch All --- */}
             <Route path="*" element={<PlaceholderPage title="Page Not Found" />} />
         </Routes>
     );
 }
 
-export default MainRoute
+export default MainRoute;
