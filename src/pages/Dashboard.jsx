@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Home,
   Building,
@@ -23,7 +23,7 @@ import {
   Sparkles,
   MapPin
 } from 'lucide-react';
-import { Link, Links } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // --- Components ---
 
@@ -38,15 +38,15 @@ function Header() {
       </div>
       
       <div className="flex items-center gap-3">
-        <Link to='/notifications' className="relative p-2 rounded-full bg-slate-50 text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+        <button className="relative p-2 rounded-full bg-slate-50 text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">
           <Bell className="w-5 h-5" />
           <span className="absolute top-1.5 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-        </Link>
-        <button className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 p-[2px] shadow-md">
+        </button>
+        <Link to={'/profile'} className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 p-[2px] shadow-md">
            <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
              <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" className="w-full h-full" />
            </div>
-        </button>
+        </Link>
       </div>
     </header>
   );
@@ -127,7 +127,7 @@ function Services() {
   const services = [
     { id: "/search", title: "Search", icon: <Search className="w-5 h-5 text-blue-600" />, color: "bg-blue-100", border: "border-blue-200" },
     { id: "#", title: "Complaints", icon: <ShieldAlert className="w-5 h-5 text-red-600" />, color: "bg-red-100", border: "border-red-200" },
-    { id: "#", title: "Pay Rent", icon: <CreditCard className="w-5 h-5 text-green-600" />, color: "bg-green-100", border: "border-green-200" },
+    { id: "/rent-payment", title: "Pay Rent", icon: <CreditCard className="w-5 h-5 text-green-600" />, color: "bg-green-100", border: "border-green-200" },
     { id: "/menu", title: "Menu", icon: <UtensilsCrossed className="w-5 h-5 text-orange-600" />, color: "bg-orange-100", border: "border-orange-200" },
     { id: "#", title: "Visitors", icon: <Users className="w-5 h-5 text-indigo-600" />, color: "bg-indigo-100", border: "border-indigo-200" },
     { id: "#", title: "Notices", icon: <FileText className="w-5 h-5 text-yellow-600" />, color: "bg-yellow-100", border: "border-yellow-200" },
@@ -251,17 +251,35 @@ function SocialMedia() {
   );
 }
 
-function BottomNav({ active, setActive, navItems }) {
+function BottomNav({ active, setActive }) {
+  const navigate = useNavigate();
+  const navItems = [
+    { name: "Home", icon: Home },
+    { name: "Bookings", icon: Building },
+    { name: "Profile", icon: User },
+    { name: "Menu", icon: Menu },
+  ];
+
+  const handleNavClick = (name) => {
+    setActive(name);
+    if (name === 'Menu') {
+      navigate('/nav-menu');
+    } else if (name === 'Home') {
+      navigate('/dashboard'); // Assuming dashboard route is /dashboard
+    }
+    // Add other routes if needed
+  };
+
   return (
     <div className="fixed bottom-5 left-0 right-0 z-40 px-6 pointer-events-none">
-        <nav className="max-w-[360px] mx-auto bg-white border border-slate-200 shadow-2xl shadow-blue-900/10 rounded-full py-3 px-6 flex justify-between items-center pointer-events-auto">
+        <nav className="max-w-[360px] mx-auto bg-white border border-slate-200 shadow-2xl shadow-blue-900/10 rounded-full py-2 px-6 flex justify-between items-center pointer-events-auto">
             {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = active === item.name;
                 return (
                     <button
                         key={item.name}
-                        onClick={() => setActive(item.name)}
+                        onClick={() => handleNavClick(item.name)}
                         className={`relative flex flex-col items-center justify-center w-12 h-12 transition-all duration-300 ${isActive ? '-translate-y-2' : 'hover:bg-slate-50 rounded-full'}`}
                     >
                         <div className={`
@@ -288,6 +306,7 @@ function BottomNav({ active, setActive, navItems }) {
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("Home");
+  const navigate = useNavigate();
   
   const navItems = [
     { name: "Home", icon: Home },
@@ -317,17 +336,26 @@ export default function Dashboard() {
     // Find current index
     const currentIndex = navItems.findIndex(item => item.name === activeTab);
     
+    let nextTab = activeTab;
+
     if (isLeftSwipe) {
        // Swipe Left -> Next Tab
        if (currentIndex < navItems.length - 1) {
-           setActiveTab(navItems[currentIndex + 1].name);
+           nextTab = navItems[currentIndex + 1].name;
        }
     }
     if (isRightSwipe) {
        // Swipe Right -> Prev Tab
        if (currentIndex > 0) {
-           setActiveTab(navItems[currentIndex - 1].name);
+           nextTab = navItems[currentIndex - 1].name;
        }
+    }
+
+    if (nextTab !== activeTab) {
+        setActiveTab(nextTab);
+        if (nextTab === 'Menu') navigate('/nav-menu');
+        if (nextTab === 'Home') navigate('/dashboard');
+        // Handle other tabs if they map to routes
     }
   }
 
@@ -356,7 +384,7 @@ export default function Dashboard() {
           <SocialMedia />
         </main>
         
-        <BottomNav active={activeTab} setActive={setActiveTab} navItems={navItems} />
+        <BottomNav active={activeTab} setActive={setActiveTab} />
       </div>
 
        {/* Tailwind Animations */}
