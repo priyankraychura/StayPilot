@@ -19,7 +19,7 @@ import {
   Dumbbell, // Gym
   Trash2
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 // Animation Styles
 const styles = `
@@ -45,7 +45,7 @@ const ALL_AMENITIES = [
   { id: 'gym', name: "Gym", icon: Dumbbell },
 ];
 
-// Initial Data
+// Mock Data for Editing Existing PG
 const INITIAL_DATA = {
   name: "The Clover House",
   type: "Luxury Co-living",
@@ -60,6 +60,17 @@ const INITIAL_DATA = {
     "No loud music after 11:00 PM.",
     "Guests allowed only in common areas."
   ]
+};
+
+// Empty Data for New PG
+const EMPTY_DATA = {
+  name: "",
+  type: "",
+  address: "",
+  description: "",
+  images: [],
+  selectedAmenityIds: [],
+  rules: [""]
 };
 
 // --- Extracted Component ---
@@ -78,8 +89,13 @@ const InputField = ({ label, value, onChange, placeholder, type = "text", classN
 
 export default function PGEditPage() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState(INITIAL_DATA);
+  const location = useLocation();
   const fileInputRef = useRef(null);
+
+  // Check if we are in "Add New" mode
+  const isNewMode = location.state?.mode === 'new';
+
+  const [formData, setFormData] = useState(isNewMode ? EMPTY_DATA : INITIAL_DATA);
 
   // --- Handlers ---
 
@@ -139,7 +155,8 @@ export default function PGEditPage() {
   };
 
   const handleSave = () => {
-    console.log("Saving Property Data:", formData);
+    if (!formData.name) return alert("Property Name is required");
+    console.log(isNewMode ? "Creating New Property:" : "Updating Property:", formData);
     navigate(-1);
   };
 
@@ -158,7 +175,9 @@ export default function PGEditPage() {
                 >
                   <ArrowLeft className="w-5 h-5" />
                 </button>
-                <h1 className="text-lg font-bold text-slate-800">Edit Property</h1>
+                <h1 className="text-lg font-bold text-slate-800">
+                    {isNewMode ? 'Add New Property' : 'Edit Property'}
+                </h1>
             </div>
             <button 
                 onClick={handleSave}
@@ -217,6 +236,7 @@ export default function PGEditPage() {
                     label="Property Name" 
                     value={formData.name} 
                     onChange={(val) => handleInputChange(null, 'name', val)} 
+                    placeholder="Enter property name"
                 />
                 <InputField 
                     label="Property Type" 
@@ -230,6 +250,7 @@ export default function PGEditPage() {
                         value={formData.address}
                         onChange={(e) => handleInputChange(null, 'address', e.target.value)}
                         rows="3"
+                        placeholder="Enter complete address"
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none"
                     />
                 </div>

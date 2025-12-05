@@ -10,7 +10,7 @@ import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 // Navigation Items Configuration
 const NAV_ITEMS = [
   { name: "Home", icon: Home, path: "/dashboard" },
-  { name: "Bookings", icon: Building, path: "/bookings" }, // Placeholder path
+  { name: "Bookings", icon: Building, path: "/bookings" },
   { name: "Profile", icon: User, path: "/profile" },
   { name: "Menu", icon: Menu, path: "/nav-menu" },
 ];
@@ -19,6 +19,7 @@ export default function BottomNavLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState("Home");
+  const [isNavVisible, setNavVisible] = useState(true); // State to control navbar visibility
 
   // Sync active tab with current URL path on mount/update
   useEffect(() => {
@@ -26,6 +27,11 @@ export default function BottomNavLayout() {
     if (currentItem) {
       setActiveTab(currentItem.name);
     }
+  }, [location.pathname]);
+
+  // Ensure navbar is visible when location changes (failsafe)
+  useEffect(() => {
+    setNavVisible(true);
   }, [location.pathname]);
 
   // --- Swipe Logic ---
@@ -64,22 +70,21 @@ export default function BottomNavLayout() {
       onTouchEnd={onTouchEnd}
     >
       {/* --- Global Background Decor --- */}
-      {/* Defined once here, visible on all child pages */}
       <div className="fixed top-[-10%] right-[-5%] w-96 h-96 bg-blue-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob pointer-events-none z-0"></div>
       <div className="fixed bottom-[-10%] left-[-10%] w-96 h-96 bg-purple-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-2000 pointer-events-none z-0"></div>
       <div className="fixed top-[40%] left-[20%] w-72 h-72 bg-pink-200/30 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000 pointer-events-none z-0"></div>
 
       {/* --- Main Content Area --- */}
-      {/* Wrapper to simulate mobile width on desktop */}
       <div className="max-w-lg mx-auto bg-white/30 min-h-screen relative shadow-2xl transition-all duration-300 flex flex-col">
         
-        {/* Child pages render here */}
+        {/* Child pages render here. We pass setNavVisible down via context */}
         <div className="flex-1 pb-24 z-10">
-            <Outlet />
+            <Outlet context={{ setNavVisible }} />
         </div>
 
         {/* --- Floating Bottom Navbar --- */}
-        <div className="fixed bottom-5 left-0 right-0 z-40 px-6 pointer-events-none">
+        {/* Added transform transition logic based on isNavVisible */}
+        <div className={`fixed bottom-5 left-0 right-0 z-40 px-6 pointer-events-none transition-transform duration-500 ease-in-out ${isNavVisible ? 'translate-y-0' : 'translate-y-[150%]'}`}>
             <nav className="max-w-[360px] mx-auto bg-white border border-slate-200 shadow-2xl shadow-blue-900/10 rounded-full py-2 px-6 flex justify-between items-center pointer-events-auto">
                 {NAV_ITEMS.map((item) => {
                     const Icon = item.icon;
@@ -109,7 +114,6 @@ export default function BottomNavLayout() {
 
       </div>
 
-      {/* Animations Style */}
       <style>{`
         @keyframes blob {
           0% { transform: translate(0px, 0px) scale(1); }

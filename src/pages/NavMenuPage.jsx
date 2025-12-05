@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   User, 
   Settings, 
@@ -17,10 +17,11 @@ import {
   BadgeCheck,
   MessageCircle,
   Star,
-  Home,
-  Menu
+  Plus,
+  CheckCircle2,
+  X
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
 // Animation Styles
 const styles = `
@@ -28,19 +29,40 @@ const styles = `
     from { transform: translateY(20px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
   }
+  @keyframes slideUpDrawer {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
   .animate-slideUp {
     animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .animate-slideUpDrawer {
+    animation: slideUpDrawer 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .animate-fadeIn {
+    animation: fadeIn 0.2s ease-out forwards;
   }
 `;
 
 // Mock PG Data for the Blue Card
 const PG_INFO = {
+  id: '1',
   name: "The Clover House",
   code: "CLVR-01",
   address: "Viman Nagar, Pune",
   rating: "4.8",
   image: null 
 };
+
+// Mock List of PGs for the Switcher
+const MY_PROPERTIES = [
+  { id: '1', name: "The Clover House", code: "CLVR-01", address: "Viman Nagar, Pune", active: true },
+  { id: '2', name: "Sunrise Residency", code: "SUN-02", address: "Koregaon Park, Pune", active: false },
+];
 
 const MenuSection = ({ title, children }) => (
   <div className="mb-5 animate-slideUp">
@@ -64,8 +86,8 @@ const MenuItem = ({
   hasToggle = false, 
   toggleValue, 
   onToggle,
-  iconColor = "text-slate-500", // Default icon color
-  bgColor = "bg-slate-50"       // Default background color
+  iconColor = "text-slate-500", 
+  bgColor = "bg-slate-50"
 }) => (
   <button 
     onClick={hasToggle ? undefined : onClick}
@@ -96,58 +118,49 @@ const MenuItem = ({
   </button>
 );
 
-// Copied BottomNav for standalone capability
-const BottomNav = ({ active }) => {
-  const navigate = useNavigate();
-  const navItems = [
-    { name: "Home", icon: Home },
-    { name: "Bookings", icon: Building },
-    { name: "Profile", icon: User },
-    { name: "Menu", icon: Menu },
-  ];
-
-  const handleNavClick = (name) => {
-    if (name === 'Home') navigate('/dashboard');
-    if (name === 'Menu') navigate('/nav-menu');
-    // Add logic for others
-  };
-
-  return (
-    <div className="fixed bottom-5 left-0 right-0 z-40 px-6 pointer-events-none">
-        <nav className="max-w-[360px] mx-auto bg-white border border-slate-200 shadow-2xl shadow-blue-900/10 rounded-full py-2 px-6 flex justify-between items-center pointer-events-auto">
-            {navItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = active === item.name;
-                return (
-                    <button
-                        key={item.name}
-                        onClick={() => handleNavClick(item.name)}
-                        className={`relative flex flex-col items-center justify-center w-12 h-12 transition-all duration-300 ${isActive ? '-translate-y-2' : 'hover:bg-slate-50 rounded-full'}`}
-                    >
-                        <div className={`
-                            p-2.5 rounded-full transition-all duration-300
-                            ${isActive ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 ring-2 ring-white' : 'text-slate-400'}
-                        `}>
-                            <Icon className="w-5 h-5" strokeWidth={2.5} />
-                        </div>
-                        {isActive && (
-                            <span className="absolute -bottom-4 text-[10px] font-bold text-blue-600 animate-in fade-in slide-in-from-top-1 whitespace-nowrap">
-                                {item.name}
-                            </span>
-                        )}
-                    </button>
-                );
-            })}
-        </nav>
-    </div>
-  );
-}
-
 export default function NavMenuPage() {
   const navigate = useNavigate();
+  
+  // Access setNavVisible from the Layout Context to hide navbar when sheet opens
+  const { setNavVisible } = useOutletContext() || { setNavVisible: () => {} };
+
   const [darkMode, setDarkMode] = useState(false);
   const [notifications, setNotifications] = useState(true);
   const [twoFactor, setTwoFactor] = useState(false);
+  
+  // --- Long Press & Sheet State ---
+  const [showProfileSheet, setShowProfileSheet] = useState(false);
+  const timerRef = useRef(null);
+  const isLongPress = useRef(false);
+
+  // --- Handlers ---
+
+  const handleTouchStart = () => {
+    isLongPress.current = false;
+    timerRef.current = setTimeout(() => {
+      isLongPress.current = true;
+      setShowProfileSheet(true);
+      setNavVisible(false); // Hide the bottom navbar
+      if (navigator.vibrate) navigator.vibrate(50);
+    }, 600);
+  };
+
+  const handleTouchEnd = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+  };
+
+  const handleCardClick = () => {
+    if (!isLongPress.current) {
+      navigate('/pg-details');
+    }
+  };
+
+  const closeSheet = () => {
+    setShowProfileSheet(false);
+    setNavVisible(true); // Bring back the bottom navbar
+  };
 
   return (
     <div className="font-sans bg-slate-50 min-h-screen w-full relative overflow-x-hidden">
@@ -157,7 +170,7 @@ export default function NavMenuPage() {
       <div className="fixed top-[-10%] left-[-5%] w-96 h-96 bg-purple-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob pointer-events-none"></div>
       <div className="fixed bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-2000 pointer-events-none"></div>
 
-      <div className="max-w-lg mx-auto bg-white/30 min-h-screen relative shadow-2xl flex flex-col pb-32">
+      <div className="max-w-lg mx-auto bg-white/30 min-h-screen relative shadow-2xl flex flex-col pb-24">
         
         {/* --- Header --- */}
         <div className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-white/40 shadow-sm px-6 py-4">
@@ -166,10 +179,15 @@ export default function NavMenuPage() {
 
         <div className="flex-1 overflow-y-auto px-4 py-6">
             
-            {/* --- Hero PG Card (Dynamic Fallback) --- */}
+            {/* --- Hero PG Card (Long Press Enabled) --- */}
             <div 
-                onClick={() => navigate('/pg-details')}
-                className={`relative h-32 rounded-3xl overflow-hidden shadow-lg shadow-blue-900/10 mb-6 cursor-pointer group animate-slideUp ${!PG_INFO.image ? 'bg-gradient-to-br from-blue-600 to-indigo-600' : ''}`}
+                onMouseDown={handleTouchStart}
+                onMouseUp={handleTouchEnd}
+                onMouseLeave={handleTouchEnd}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+                onClick={handleCardClick}
+                className={`relative h-32 rounded-3xl overflow-hidden shadow-lg shadow-blue-900/10 mb-6 cursor-pointer group animate-slideUp select-none active:scale-[0.98] transition-transform ${!PG_INFO.image ? 'bg-gradient-to-br from-blue-600 to-indigo-600' : ''}`}
             >
                 {/* Background Logic */}
                 {PG_INFO.image ? (
@@ -183,7 +201,6 @@ export default function NavMenuPage() {
                     </>
                 ) : (
                     <>
-                        {/* Abstract Decor for No-Image State */}
                         <div className="absolute -right-4 -bottom-8 text-white/10 transform rotate-12 group-hover:scale-110 transition-transform duration-700">
                             <Building className="w-32 h-32" />
                         </div>
@@ -331,9 +348,71 @@ export default function NavMenuPage() {
             </div>
 
         </div>
-        
-        {/* --- Bottom Nav (Visible on Menu Page) --- */}
-        <BottomNav active="Menu" />
+
+        {/* --- Switch Profile Bottom Sheet --- */}
+        {showProfileSheet && (
+            <div className="fixed inset-0 z-50 flex items-end justify-center">
+                {/* Backdrop */}
+                <div 
+                    className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-fadeIn"
+                    onClick={closeSheet}
+                ></div>
+
+                {/* Sheet */}
+                <div className="bg-white w-full max-w-lg rounded-t-[32px] p-6 relative z-10 animate-slideUpDrawer shadow-2xl">
+                    <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6"></div>
+                    
+                    <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-xl font-bold text-slate-800">Switch Property</h3>
+                        <button 
+                            onClick={closeSheet}
+                            className="p-2 bg-slate-50 rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                    </div>
+
+                    <div className="space-y-3 max-h-[60vh] overflow-y-auto pb-4">
+                        {MY_PROPERTIES.map((pg) => (
+                            <button 
+                                key={pg.id}
+                                onClick={() => { /* Logic to switch context */ closeSheet(); }}
+                                className={`w-full p-4 rounded-2xl border flex items-center justify-between transition-all active:scale-[0.98] ${
+                                    pg.active 
+                                    ? 'border-blue-500 bg-blue-50 shadow-sm' 
+                                    : 'border-slate-100 bg-white hover:border-blue-200'
+                                }`}
+                            >
+                                <div className="flex items-center gap-4">
+                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                                        pg.active ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-400'
+                                    }`}>
+                                        <Building className="w-6 h-6" />
+                                    </div>
+                                    <div className="text-left">
+                                        <p className={`text-sm font-bold ${pg.active ? 'text-blue-900' : 'text-slate-800'}`}>{pg.name}</p>
+                                        <p className="text-xs text-slate-500 mt-0.5">{pg.address}</p>
+                                    </div>
+                                </div>
+                                {pg.active && (
+                                    <div className="bg-blue-600 rounded-full p-1">
+                                        <CheckCircle2 className="w-4 h-4 text-white" />
+                                    </div>
+                                )}
+                            </button>
+                        ))}
+
+                        <button 
+                            onClick={() => { navigate('/edit-pg', { state: { mode: 'new' } }); closeSheet(); }}
+                            className="w-full py-4 border-2 border-dashed border-slate-300 rounded-2xl flex items-center justify-center gap-2 text-slate-500 font-bold hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-all mt-4"
+                        >
+                            <Plus className="w-5 h-5" />
+                            Add New Property
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )}
 
       </div>
     </div>
